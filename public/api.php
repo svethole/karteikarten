@@ -58,6 +58,7 @@ try {
         $antwort = match ($route) {
             'wiederholungen' => wiederholungen_speichern((array) ($e['liste'] ?? [])),
             'karte_aktion' => karte_aktion($e),
+            'wiederholung_zurueck' => wiederholung_zurueck($e),
             'projekt_speichern' => projekt_speichern($e),
             'projekt_loeschen' => projekt_loeschen((int) ($e['id'] ?? 0)),
             'deck_speichern' => deck_speichern($e),

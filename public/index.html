@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Karteikarten</title>
+<meta name="description" content="Karteikarten mit Wiederholung in Abständen">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#f5f1ea" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#12151a" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="schriften/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<script>
+  // Hell/Dunkel vor dem ersten Zeichnen setzen (gemerkt im Browser, Server-Einstellung folgt beim Laden)
+  try { const d = localStorage.getItem("kk-design"); if (d === "hell" || d === "dunkel") document.documentElement.dataset.design = d; } catch (e) {}
+</script>
+</head>
+<body>
+<header class="kopf"><div class="kopf-innen" id="kopf"></div></header>
+<main class="seite" id="app"><div class="laden"><div class="kreisel"></div></div></main>
+<script type="module" src="app/main.js"></script>
+</body>
+</html>

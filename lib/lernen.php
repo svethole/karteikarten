@@ -167,3 +167,23 @@ function karte_aktion(array $e): array
     }
     return ['ok' => true, 'anzahl' => $n];
 }
+
+/** Letzte Bewertung zurücknehmen: Protokollzeile löschen, vorherigen Zustand wiederherstellen (vom Gerät mitgeschickt) */
+function wiederholung_zurueck(array $e): array
+{
+    $b = benutzer();
+    $cid = (string) ($e['cid'] ?? '');
+    $w = q1('SELECT karte_id FROM wiederholungen WHERE cid = ? AND benutzer = ?', [$cid, $b]);
+    if (!$w) return ['ok' => true, 'gefunden' => false];
+    $kid = (int) $w['karte_id'];
+    q('DELETE FROM wiederholungen WHERE cid = ? AND benutzer = ?', [$cid, $b]);
+    $v = $e['vorher'] ?? null;
+    if (is_array($v) && !empty($v['st'])) {
+        q('UPDATE zustand SET st = ?, s = ?, d = ?, faellig = ?, zuletzt = ?, wdh = ?, fehler = ?, t = ? WHERE benutzer = ? AND karte_id = ?', [
+            in_array($v['st'], ['learn', 'relearn', 'review'], true) ? $v['st'] : 'review', (float) ($v['s'] ?? 1), (float) ($v['d'] ?? 5),
+            (int) ($v['due'] ?? jetzt_ms()), isset($v['last']) ? (int) $v['last'] : null, (int) ($v['reps'] ?? 0), (int) ($v['lapses'] ?? 0), jetzt_ms(), $b, $kid]);
+    } else {
+        q('UPDATE zustand SET st = NULL, s = NULL, d = NULL, faellig = NULL, zuletzt = NULL, wdh = 0, fehler = 0, t = ? WHERE benutzer = ? AND karte_id = ?', [jetzt_ms(), $b, $kid]);
+    }
+    return ['ok' => true, 'gefunden' => true];
+}

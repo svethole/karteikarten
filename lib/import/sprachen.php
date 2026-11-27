@@ -192,7 +192,7 @@ function import_sprache(ImportLauf $lauf, string $q, string $basis): array
             : trim(($l['num'] ?? '') . '. ' . ($l['it'] ?? '') . ' – ' . ($l['de'] ?? ''), ' .–');
         $deck = $lauf->deck('lektion:' . $lid, $lekName, $einheit);
         $sperre = 'lektion:' . $lid;
-        $tags = 'lektion_' . $lid;
+        $tags = '';
 
         // Vokabeln (je zwei Karten: Fremdsprache → Deutsch, Deutsch → Fremdsprache)
         $linked = [];
@@ -268,7 +268,7 @@ function import_sprache(ImportLauf $lauf, string $q, string $basis): array
                 'Genus' => (string) (genus_von_eintrag($e) ?? ''), 'Beide Richtungen' => $beide ? '1' : '', 'Sprache' => $sprache];
             $karten = [0 => "l:$id:cz"];
             if ($beide) $karten[1] = "l:$id:de";
-            $lauf->notiz("l:$id", $gf, 'sprache-grundform', $f, $karten, 'lektion:' . $x['lid'], 'lektion_' . $x['lid']);
+            $lauf->notiz("l:$id", $gf, 'sprache-grundform', $f, $karten, 'lektion:' . $x['lid'], '');
         }
         $info['grundformen'] = count($seenLemma);
     }
@@ -298,7 +298,7 @@ function import_sprache(ImportLauf $lauf, string $q, string $basis): array
                     'Bedeutung' => (string) ($v['de'] ?? ''), 'Genus' => $art, 'Sprache' => $sprache];
                 $key = 'g:' . $v['id'];
             }
-            $lauf->notiz($key, $gd, 'sprache-genus', $f, [0 => $key], 'lektion:' . $x['lid'], 'lektion_' . $x['lid']);
+            $lauf->notiz($key, $gd, 'sprache-genus', $f, [0 => $key], 'lektion:' . $x['lid'], '');
         }
         $info['genus'] = count($genusListe);
     }

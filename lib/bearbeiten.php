@@ -81,7 +81,9 @@ function projekt_speichern(array $e): array
     $name = trim(text_kuerzen((string) ($e['name'] ?? ''), 80));
     $id = (int) ($e['id'] ?? 0);
     $t = jetzt_ms();
-    if ($id) {
+    if ($id && !empty($e['nur_einstellungen'])) {
+        projekt_pruefen($id);
+    } elseif ($id) {
         $p = projekt_pruefen($id);
         // Eingebaute Projekte: nur Darstellung (Bild, Farbe) und nur für Admins
         if ($p['quelle'] !== null) {
