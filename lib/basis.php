@@ -20,7 +20,7 @@ function config(?string $schluessel = null)
             'quellen' => [
                 'its' => '/var/www/its-karteikarten',
                 'cz' => '/var/www/tschechischtrainer',
-                'it' => '/var/www/italienisch',
+                'it' => '/var/www/italiano',
                 'nl' => '/var/www/nederlands',
             ],
             'trainer_benutzer' => [],

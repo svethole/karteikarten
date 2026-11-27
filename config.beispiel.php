@@ -21,7 +21,7 @@ return [
     'quellen' => [
         'its' => '/var/www/its-karteikarten',
         'cz' => '/var/www/tschechischtrainer',
-        'it' => '/var/www/italienisch',
+        'it' => '/var/www/italiano',
         'nl' => '/var/www/nederlands',
     ],
     // Benutzername in den Sprachtrainern (data/u-<name>.json und cards-<name>.json), falls er vom App-Konto abweicht.

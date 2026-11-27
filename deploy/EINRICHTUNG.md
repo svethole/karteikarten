@@ -67,7 +67,7 @@ sudo nano config.php
 
 In `config.php` wichtig:
 
-- `quellen`: Pfade der Trainer (Standard: `/var/www/its-karteikarten`, `/var/www/tschechischtrainer`, `/var/www/italienisch`, `/var/www/nederlands`). Fehlt ein Ordner, gibt es das Projekt einfach nicht.
+- `quellen`: Pfade der Trainer (Standard: `/var/www/its-karteikarten`, `/var/www/tschechischtrainer`, `/var/www/italiano`, `/var/www/nederlands`). Fehlt ein Ordner, gibt es das Projekt einfach nicht.
 - `trainer_benutzer`: Die Sprachkurse speichern den Fortschritt unter dem in nginx fest eingetragenen Namen (Italienisch und Niederländisch: `lukas`). Ohne Eintrag nimmt die App für Admins die einzige Fortschrittsdatei eines Trainers. Sicher ist: `'svetho' => ['cz' => '…', 'it' => 'lukas', 'nl' => 'lukas']`.
 - `ki.schluessel`: Anthropic-Schlüssel für die Claude-Vorschläge (kann derselbe wie in `/var/www/tschechischtrainer/ki.config.php` sein). Leer = aus.
 
