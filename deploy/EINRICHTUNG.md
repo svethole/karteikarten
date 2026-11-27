@@ -119,11 +119,20 @@ sudo systemctl start svetho-vorschau.service
 
 ## Mehrere Konten
 
-Die svetho-Anmeldung setzt ein gemeinsames Cookie und verrät der App nicht, **wer** angemeldet ist. Solange das so bleibt,
-sind alle Angemeldeten das Konto `standard_benutzer`. Für echte Mehrbenutzer-Nutzung kann das Portal beim Anmelden
-zusätzlich ein signiertes Cookie `svetho_wer` setzen (`base64url(name) . "." . hmac_sha256(name, schlüssel)`); denselben Schlüssel
-trägst Du dann in `config.php` unter `sso_benutzer_schluessel` ein. Freigaben der eingebauten Projekte verwaltet der Admin
-im Projekt unter „Einstellungen“.
+Das gemeinsame Cookie `svetho_sso` sagt nur „angemeldet“. Wer angemeldet ist, steht im zweiten Cookie **`svetho_wer`**, das das
+svetho-Portal beim Anmelden setzt (signiert mit `/etc/svetho/wer-schluessel`, angelegt von `svetho-portal/install.sh`).
+Die App liest denselben Schlüssel (`sso_benutzer_schluessel_datei` in `config.php`) – mehr ist nicht einzurichten:
+
+```bash
+cd /var/www/svetho-portal && sudo git pull && sudo ./install.sh     # legt den Schlüssel an, aktualisiert Anmelden/Abmelden
+ls -l /etc/svetho/wer-schluessel                                    # root:www-data, -rw-r-----
+```
+
+- **Einmal ab- und wieder anmelden** (https://svetho.net/abmelden): Erst dann gibt es das neue Cookie.
+- `admins` in `config.php` muss der **Anmeldename im Portal** sein (aus `/etc/nginx/.htpasswd-svetho`).
+- Weitere Konten legst Du wie gewohnt mit `sudo htpasswd /etc/nginx/.htpasswd-svetho <name>` an. Jedes Konto bekommt eigene
+  Projekte und eigenen Lernstand; die eingebauten Projekte gibst Du im Projekt unter „Einstellungen“ frei.
+- Ohne Cookie (alte Anmeldung, Schlüssel fehlt) gilt `standard_benutzer`.
 
 ## Aktualisieren
 

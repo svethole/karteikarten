@@ -7,9 +7,12 @@ return [
     'medien' => __DIR__ . '/data/medien',
 
     // Anmeldung: Die gemeinsame svetho-Anmeldung sagt nur „angemeldet“, nicht wer.
-    // Reihenfolge: REMOTE_USER von nginx → signiertes Cookie svetho_wer (falls Schlüssel gesetzt) → Standardbenutzer.
+    // Reihenfolge: REMOTE_USER von nginx → signiertes Cookie svetho_wer vom svetho-Portal → Standardbenutzer.
+    // admins = Anmeldenamen aus dem Portal (/etc/nginx/.htpasswd-svetho).
     'standard_benutzer' => 'svetho',
+    // Schlüssel des Benutzer-Cookies svetho_wer; leer = aus der Datei lesen, die svetho-portal/install.sh anlegt
     'sso_benutzer_schluessel' => '',
+    'sso_benutzer_schluessel_datei' => '/etc/svetho/wer-schluessel',
     'admins' => ['svetho'],
 
     'zeitzone' => 'Europe/Berlin',

@@ -14,6 +14,7 @@ function config(?string $schluessel = null)
             'medien' => APP_WURZEL . '/data/medien',
             'standard_benutzer' => 'svetho',
             'sso_benutzer_schluessel' => '',
+            'sso_benutzer_schluessel_datei' => '/etc/svetho/wer-schluessel',
             'admins' => ['svetho'],
             'zeitzone' => 'Europe/Berlin',
             'quellen' => [
@@ -146,15 +147,21 @@ function benutzer(): string
     return $name;
 }
 
-/** Signiertes Cookie „svetho_wer“ = base64url(name) . "." . hmac_sha256(name), optional vom Portal gesetzt */
+/**
+ * Signiertes Cookie „svetho_wer“ vom svetho-Portal: base64url(name) . "." . ablauf . "." . hmac_sha256(name . "|" . ablauf).
+ * Schlüssel aus config (sso_benutzer_schluessel) oder aus der Datei, die das Portal anlegt (/etc/svetho/wer-schluessel).
+ */
 function sso_cookie_benutzer(): ?string
 {
-    $key = (string) config('sso_benutzer_schluessel');
+    $key = trim((string) config('sso_benutzer_schluessel'));
+    $datei = (string) config('sso_benutzer_schluessel_datei');
+    if ($key === '' && $datei !== '' && is_readable($datei)) $key = trim((string) file_get_contents($datei));
     $c = (string) ($_COOKIE['svetho_wer'] ?? '');
-    if ($key === '' || $c === '' || !str_contains($c, '.')) return null;
-    [$b64, $sig] = explode('.', $c, 2);
+    if (strlen($key) < 32 || substr_count($c, '.') !== 2) return null;
+    [$b64, $ablauf, $sig] = explode('.', $c, 3);
     $n = base64_decode(strtr($b64, '-_', '+/'), true);
-    if ($n === false || !hash_equals(hash_hmac('sha256', $n, $key), $sig)) return null;
+    if ($n === false || !ctype_digit($ablauf) || (int) $ablauf < time()) return null;
+    if (!hash_equals(hash_hmac('sha256', $n . '|' . $ablauf, $key), $sig)) return null;
     return $n;
 }
 
