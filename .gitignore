@@ -1,0 +1,9 @@
+/data/*
+!/data/.gitkeep
+/config.php
+/ki.config.php
+node_modules/
+/tests/ergebnisse/
+*.sqlite
+*.sqlite-*
+.DS_Store
