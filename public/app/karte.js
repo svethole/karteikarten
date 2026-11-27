@@ -250,7 +250,9 @@ export function karteHTML(o) {
   }
   // Genus: Baustein vorhanden und Feld gefüllt → Färbung und Effekt am unteren Rand
   let genusKlasse = "", fx = "";
-  const gb = [...(vorlage.vorne || []), ...(vorlage.hinten || [])].find((b) => b.t === "genus");
+  // Nur Bausteine der gezeigten Seite zählen (sonst verrät der Effekt bei der Genus-Abfrage die Lösung)
+  const seite = o.hinten ? [...(vorlage.hinten || []), ...((vorlage.hinten || []).some((b) => b.t === "vorderseite") ? vorlage.vorne || [] : [])] : vorlage.vorne || [];
+  const gb = seite.find((b) => b.t === "genus");
   const g = gb ? GENUS[feldwert(notiz, gb.feld).trim()] : null;
   if (g && o.genusEffekte !== false) {
     genusKlasse = g.klasse;

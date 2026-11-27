@@ -1,0 +1,11 @@
+[Unit]
+Description=Karteikarten: eingebaute Projekte mit den Trainern abgleichen
+After=network.target
+
+[Service]
+Type=oneshot
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/karteikarten
+ExecStart=/usr/bin/php /var/www/karteikarten/bin/abgleich.php
+Nice=10

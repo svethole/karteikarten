@@ -21,9 +21,11 @@ return [
         'it' => '/var/www/italienisch',
         'nl' => '/var/www/nederlands',
     ],
-    // Benutzername in den Sprachtrainern (data/u-<name>.json), falls er vom App-Konto abweicht
+    // Benutzername in den Sprachtrainern (data/u-<name>.json und cards-<name>.json), falls er vom App-Konto abweicht.
+    // Die Trainer tragen REMOTE_USER fest in nginx ein. Ohne Eintrag nimmt die App für Admins die einzige
+    // Fortschrittsdatei eines Trainers. Je Quelle verschieden: 'svetho' => ['cz' => 'svetho', 'it' => 'lukas', 'nl' => 'lukas']
     'trainer_benutzer' => [
-        // 'svetho' => 'svetho',
+        // 'svetho' => 'lukas',
     ],
 
     // Claude-Vorschläge beim Anlegen eigener Karten (leer = aus)

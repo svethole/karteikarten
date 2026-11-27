@@ -337,7 +337,7 @@ function import_sprache(ImportLauf $lauf, string $q, string $basis): array
     // Eigene Karten der Benutzer (data/cards-<trainer-benutzer>.json), nur für das jeweilige Konto sichtbar
     $eigene = 0;
     foreach (projekt_benutzer($lauf->projekt) as $b) {
-        $tb = trainer_name($b);
+        $tb = trainer_name($b, $q);
         $daten = quelle_json($basis . '/data/cards-' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $tb) . '.json');
         if (empty($daten['cards'])) continue;
         $fortschritt = quelle_json($basis . '/data/u-' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $tb) . '.json');
@@ -377,9 +377,23 @@ function projekt_benutzer(int $projekt): array
     return $f;
 }
 
-function trainer_name(string $benutzer): string
+/**
+ * Benutzername im Trainer (data/u-<name>.json). Die Trainer tragen REMOTE_USER fest in nginx ein (z. B. „lukas“),
+ * deshalb: 1. Zuordnung aus der Konfiguration (Text oder je Quelle), 2. gleichnamige Datei,
+ * 3. für Admins: die einzige Fortschrittsdatei des Trainers.
+ */
+function trainer_name(string $benutzer, ?string $q = null): string
 {
-    return (string) (((array) config('trainer_benutzer'))[$benutzer] ?? $benutzer);
+    $map = ((array) config('trainer_benutzer'))[$benutzer] ?? null;
+    if (is_string($map) && $map !== '') return $map;
+    if (is_array($map) && $q !== null && !empty($map[$q])) return (string) $map[$q];
+    $basis = $q !== null ? (((array) config('quellen'))[$q] ?? '') : '';
+    if ($basis === '' || is_file($basis . '/data/u-' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $benutzer) . '.json')) return $benutzer;
+    if (ist_admin($benutzer)) {
+        $dateien = glob($basis . '/data/u-*.json') ?: [];
+        if (count($dateien) === 1) return substr(basename($dateien[0], '.json'), 2);
+    }
+    return $benutzer;
 }
 
 /**
@@ -391,7 +405,7 @@ function sprachen_benutzer_abgleichen(int $projekt, string $q, string $basis, ?a
     if ($q === 'its') return [];
     $aus = [];
     foreach (projekt_benutzer($projekt) as $b) {
-        $tb = trainer_name($b);
+        $tb = trainer_name($b, $q);
         $t = jetzt_ms();
         q('INSERT OR IGNORE INTO freischaltungen (benutzer, projekt_id, sperre, zeit) VALUES (?,?,?,?)', [$b, $projekt, 'benutzer:' . $b, $t]);
         $datei = $basis . '/data/u-' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $tb) . '.json';
